@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شات بوت</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            max-width: 90%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-box {
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .chat-box div {
+            margin: 5px 0;
+        }
+
+        .user {
+            text-align: right;
+            color: blue;
+        }
+
+        .bot {
+            text-align: left;
+            color: green;
+        }
+
+        input {
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #ccc;
+            width: calc(100% - 60px);
+        }
+
+        button {
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box"></div>
+        <input type="text" id="user-input" placeholder="اكتب رسالتك هنا...">
+        <button id="send-btn">إرسال</button>
+    </div>
+
+    <script>
+        document.getElementById('send-btn').addEventListener('click', sendMessage);
+        document.getElementById('user-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const userMessage = inputField.value.trim();
+            if (userMessage) {
+                appendMessage(userMessage, 'user');
+                inputField.value = '';
+                setTimeout(() => {
+                    botResponse(userMessage);
+                }, 500);
+            }
+        }
+
+        function appendMessage(message, sender) {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = message;
+            messageDiv.classList.add(sender);
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+        }
+
+        function botResponse(message) {
+            let response = "عذرًا، لم أفهم ذلك."; // Default response
+
+            if (message.includes('مرحبا') || message.includes('أهلاً')) {
+                response = "أهلاً وسهلاً! كيف يمكنني مساعدتك؟";
+            } else if (message.includes('ما هو الوقت؟')) {
+                const time = new Date().toLocaleTimeString('ar-SA');
+                response = "الوقت الحالي هو " + time;
+            } else if (message.includes('ما هو التاريخ؟')) {
+                const date = new Date().toLocaleDateString('ar-SA');
+                response = "تاريخ اليوم هو " + date;
+            } else if (message.includes('افتح جوجل')) {
+                window.open("https://google.com", "_blank");
+                response = "تم فتح جوجل.";
+            }
+
+            appendMessage(response, 'bot');
+        }
+    </script>
+
+</body>
+</html>
